@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/auth.service";
 
 
 const COIL_COLORS = {
@@ -95,7 +96,12 @@ export default function Login() {
 
   import { login } from "../services/auth.service";
 
-const handleSubmit = async (e) => {
+const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
+  };
+
+  const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (!form.correo || !form.password) {
@@ -112,7 +118,6 @@ const handleSubmit = async (e) => {
       form.password
     );
 
-    // 🔀 Redirección por rol
     if (profile?.role === "administrador") {
       navigate("/admin");
     } else {
