@@ -94,28 +94,31 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.correo || !form.password) {
-      setError("Por favor completa todos los campos.");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-  await login(
-    form.correo,
-    form.password,
-    form.rol
-   );
+  e.preventDefault();
+
+  if (!form.correo || !form.password) {
+    setError("Por favor completa todos los campos.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: form.correo,
+      password: form.password,
+    });
+
+    if (error) throw error;
 
     navigate("/ficha");
-
-    } catch (error) {
-      setError(error.message);
-    }finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
