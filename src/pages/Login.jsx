@@ -93,7 +93,9 @@ export default function Login() {
     setError("");
   };
 
-  const handleSubmit = async (e) => {
+  import { login } from "../services/auth.service";
+
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (!form.correo || !form.password) {
@@ -105,21 +107,24 @@ export default function Login() {
   setError("");
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: form.correo,
-      password: form.password,
-    });
+    const { user, profile } = await login(
+      form.correo,
+      form.password
+    );
 
-    if (error) throw error;
+    // 🔀 Redirección por rol
+    if (profile?.role === "administrador") {
+      navigate("/admin");
+    } else {
+      navigate("/ficha");
+    }
 
-    navigate("/ficha");
   } catch (error) {
     setError(error.message);
   } finally {
     setLoading(false);
   }
 };
-
   return (
     <>
       <style>{`
